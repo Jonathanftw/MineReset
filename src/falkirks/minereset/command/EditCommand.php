@@ -2,7 +2,6 @@
 
 namespace falkirks\minereset\command;
 
-
 use falkirks\minereset\task\AboutPullTask;
 use Frago9876543210\EasyForms\elements\custom\Dropdown;
 use Frago9876543210\EasyForms\elements\custom\Input;
@@ -10,10 +9,11 @@ use Frago9876543210\EasyForms\elements\custom\Label;
 use Frago9876543210\EasyForms\forms\CustomForm;
 use Frago9876543210\EasyForms\forms\ModalForm;
 use pocketmine\command\CommandSender;
-use pocketmine\Player;
+use pocketmine\player\Player;
 use pocketmine\utils\TextFormat;
 
 class EditCommand extends SubCommand{
+
     public function execute(CommandSender $sender, $commandLabel, array $args){
         if($sender->hasPermission("minereset.command.edit")) {
             if($sender instanceof Player && $this->formsSupported()){

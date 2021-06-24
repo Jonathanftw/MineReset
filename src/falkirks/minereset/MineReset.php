@@ -1,6 +1,6 @@
 <?php
-namespace falkirks\minereset;
 
+namespace falkirks\minereset;
 
 use falkirks\minereset\command\AboutCommand;
 use falkirks\minereset\command\CreateCommand;
@@ -19,10 +19,9 @@ use falkirks\minereset\store\EntityStore;
 use falkirks\minereset\store\YAMLStore;
 use falkirks\minereset\task\ScheduledResetTaskPool;
 use falkirks\minereset\util\DebugDumpFactory;
-use pocketmine\level\Level;
 use pocketmine\plugin\PluginBase;
 use pocketmine\utils\Config;
-
+use pocketmine\world\World;
 
 /**
  * MineReset is a powerful mine resetting tool for PocketMine
@@ -49,7 +48,7 @@ class MineReset extends PluginBase{
     /** @var  CreationListener */
     private $creationListener;
 
-    public function onEnable(){
+    public function onEnable(): void {
         self::detectChunkSetting();
 
         @mkdir($this->getDataFolder());
@@ -85,7 +84,7 @@ class MineReset extends PluginBase{
 
     }
 
-    public function onDisable(){
+    public function onDisable(): void {
         $this->mineManager->saveAll();
     }
 
@@ -140,7 +139,7 @@ class MineReset extends PluginBase{
 
     private static function detectChunkSetting(){
         if(self::$supportsChunkSetting === null) {
-            $class = new \ReflectionClass(Level::class);
+            $class = new \ReflectionClass(World::class);
             $func = $class->getMethod("setChunk");
             $filename = $func->getFileName();
             $start_line = $func->getStartLine() - 1;
@@ -149,7 +148,7 @@ class MineReset extends PluginBase{
 
             $source = file($filename);
             $body = implode("", array_slice($source, $start_line, $length));
-            self::$supportsChunkSetting = strpos($body, 'removeEntity') !== false;
+            self::$supportsChunkSetting = str_contains($body, 'removeEntity');
         }
     }
 }

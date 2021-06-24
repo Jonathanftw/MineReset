@@ -5,6 +5,7 @@ namespace falkirks\minereset\store;
 use falkirks\minereset\MineReset;
 
 class EntityStore{
+
     private $store;
     /** @var  MineReset */
     private $api;

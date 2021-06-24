@@ -1,13 +1,13 @@
 <?php
+
 namespace falkirks\minereset\command;
 
-
-use falkirks\minereset\Mine;
 use falkirks\minereset\util\BlockStringParser;
 use pocketmine\command\CommandSender;
 use pocketmine\utils\TextFormat;
 
 class SetCommand extends SubCommand{
+
     public function execute(CommandSender $sender, $commandLabel, array $args){
         if(!$sender->hasPermission("minereset.command.set"))
             return $sender->sendMessage(TextFormat::RED . "You do not have permission to run this command." . TextFormat::RESET);

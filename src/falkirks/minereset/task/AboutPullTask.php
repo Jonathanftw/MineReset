@@ -1,4 +1,7 @@
 <?php
+
+//THIS WAS NOT UPDATED TO 4.0
+
 namespace falkirks\minereset\task;
 
 
@@ -23,7 +26,7 @@ class AboutPullTask extends AsyncTask {
 
     public function onRun() : void {
         if(method_exists(Utils::class, "getURL")){
-            $this->setResult(Utils::getURL(AboutPullTask::ABOUT_URL));
+            $this->setResult(Utils::get(AboutPullTask::ABOUT_URL));
         }
         else {
             $this->setResult(Internet::getURL(AboutPullTask::ABOUT_URL));

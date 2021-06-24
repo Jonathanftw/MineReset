@@ -1,11 +1,11 @@
 <?php
-namespace falkirks\minereset\command;
 
+namespace falkirks\minereset\command;
 
 use falkirks\minereset\MineReset;
 use Frago9876543210\EasyForms\forms\ModalForm;
 use pocketmine\command\CommandSender;
-use pocketmine\Player;
+use pocketmine\player\Player;
 use pocketmine\utils\TextFormat;
 
 class DestroyCommand extends SubCommand{
@@ -23,8 +23,8 @@ class DestroyCommand extends SubCommand{
         "y"
     ];
 
-    private $offset;
-    private $senders;
+    private int $offset;
+    private array $senders;
 
     public function __construct(MineReset $mineReset){
         parent::__construct($mineReset);

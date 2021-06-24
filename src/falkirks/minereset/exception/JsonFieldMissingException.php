@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: noahheyl
@@ -7,7 +8,6 @@
  */
 
 namespace falkirks\minereset\exception;
-
 
 class JsonFieldMissingException extends MineResetException
 {

@@ -1,15 +1,13 @@
 <?php
+
 namespace falkirks\minereset\command;
 
-
 use falkirks\minereset\listener\MineCreationSession;
-use falkirks\minereset\Mine;
 use pocketmine\command\CommandSender;
-use pocketmine\Player;
+use pocketmine\player\Player;
 use pocketmine\utils\TextFormat;
 
 class CreateCommand extends SubCommand{
-
 
     public function execute(CommandSender $sender, $commandLabel, array $args){
         if(!$sender->hasPermission("minereset.command.create"))

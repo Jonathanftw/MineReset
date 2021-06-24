@@ -10,6 +10,7 @@ use pocketmine\utils\TextFormat;
 use pocketmine\utils\Utils;
 
 class ReportCommand extends SubCommand{
+
     public function execute(CommandSender $sender, $commandLabel, array $args){
         if($sender->hasPermission("minereset.command.report")) {
             $data = $this->getApi()->getDebugDumpFactory()->generate();

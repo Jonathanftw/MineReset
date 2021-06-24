@@ -2,13 +2,12 @@
 
 namespace falkirks\minereset\util;
 
-
-use falkirks\minereset\Mine;
 use falkirks\minereset\MineReset;
 
 class DebugDumpFactory{
+
     /** @var  MineReset */
-    private $api;
+    private MineReset $api;
 
 
     /**
@@ -17,7 +16,6 @@ class DebugDumpFactory{
     public function __construct(MineReset $mineReset){
         $this->api = $mineReset;
     }
-
 
     public function generate(): string {
         return implode("\n", [

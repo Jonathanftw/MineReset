@@ -1,6 +1,6 @@
 <?php
-namespace falkirks\minereset\command;
 
+namespace falkirks\minereset\command;
 
 use falkirks\minereset\exception\InvalidBlockStringException;
 use falkirks\minereset\exception\InvalidStateException;

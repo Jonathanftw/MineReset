@@ -1,6 +1,6 @@
 <?php
-namespace falkirks\minereset\listener;
 
+namespace falkirks\minereset\listener;
 
 use falkirks\minereset\Mine;
 use falkirks\minereset\MineReset;
@@ -8,12 +8,12 @@ use falkirks\simplewarp\SimpleWarp;
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\block\BlockPlaceEvent;
 use pocketmine\event\Listener;
-use pocketmine\event\player\PlayerMoveEvent;
-use pocketmine\level\Position;
-use pocketmine\Player;
+use pocketmine\player\Player;
 use pocketmine\utils\TextFormat;
+use pocketmine\world\Position;
 
 class RegionBlockerListener implements Listener {
+
     /** @var  MineReset */
     private $api;
 
@@ -31,7 +31,7 @@ class RegionBlockerListener implements Listener {
         if($mine->hasWarp() && $swarp instanceof SimpleWarp){
             $swarp->getApi()->warpPlayerTo($player, $mine->getWarpName());
         } else {
-            $player->teleport($player->getLevel()->getSafeSpawn($player->getPosition()));
+            $player->teleport($player->getWorld()->getSafeSpawn($player->getPosition()));
         }
     }
 
@@ -56,10 +56,10 @@ class RegionBlockerListener implements Listener {
      */
     public function onBlockPlace(BlockPlaceEvent $event){
 
-        $mine = $this->getResettingMineAtPosition($event->getBlock());
+        $mine = $this->getResettingMineAtPosition($event->getBlock()->getPos());
         if($mine != null){
             $event->getPlayer()->sendMessage(TextFormat::RED . "A mine is currently resetting in this area. You may not place blocks." . TextFormat::RESET);
-            $event->setCancelled();
+            $event->cancel();
         }
     }
 
@@ -70,10 +70,10 @@ class RegionBlockerListener implements Listener {
      */
     public function onBlockDestroy(BlockBreakEvent $event){
 
-        $mine = $this->getResettingMineAtPosition($event->getBlock());
+        $mine = $this->getResettingMineAtPosition($event->getBlock()->getPos());
         if($mine != null){
             $event->getPlayer()->sendMessage(TextFormat::RED . "A mine is currently resetting in this area. You may not break blocks." . TextFormat::RESET);
-            $event->setCancelled();
+            $event->cancel();
         }
     }
 
@@ -92,6 +92,5 @@ class RegionBlockerListener implements Listener {
     public function getApi(): MineReset{
         return $this->api;
     }
-
 
 }

@@ -8,11 +8,12 @@ use falkirks\minereset\exception\MineResetException;
 use falkirks\minereset\exception\WorldNotFoundException;
 use falkirks\minereset\task\ResetTask;
 use falkirks\minereset\util\BlockStringParser;
-use pocketmine\level\format\Chunk;
-use pocketmine\level\Level;
-use pocketmine\level\Position;
 use pocketmine\math\Vector3;
 use pocketmine\scheduler\Task;
+use pocketmine\world\format\Chunk;
+use pocketmine\world\format\io\FastChunkSerializer;
+use pocketmine\world\Position;
+use pocketmine\world\World;
 
 /**
  * Class Mine
@@ -22,19 +23,18 @@ use pocketmine\scheduler\Task;
  * @package falkirks\minereset\mine
  */
 class Mine extends Task implements \JsonSerializable {
-    private $pointA;
-    private $pointB;
-    private $level;
-    private $data;
-    private $name;
-    private $isResetting;
 
+    private Vector3 $pointA;
+    private Vector3 $pointB;
+    private string $level;
+    private array $data;
+    private string $name;
+    private bool $isResetting;
 
-    private $resetInterval;
-    private $warpName;
+    private int $resetInterval;
+    private string $warpName;
 
-    private $api;
-
+    private MineManager $api;
 
     /**
      * Mine constructor.
@@ -100,11 +100,11 @@ class Mine extends Task implements \JsonSerializable {
      */
     public function destroy(){
         if($this->getHandler() !== null) {
-            $this->getApi()->getApi()->getScheduler()->cancelTask($this->getTaskId());
+           // $this->getApi()->getApi()->getScheduler()->cancelTask($this->getTaskId());
         }
     }
 
-    public function onRun(int $currentTick){
+    public function onRun(): void {
         try {
             $this->reset();
         }
@@ -128,7 +128,7 @@ class Mine extends Task implements \JsonSerializable {
     }
 
     public function isPointInside(Position $position): bool{
-        if($this->getLevel() !== null && $position->getLevel()->getId() !== $this->getLevel()->getId()){
+        if($this->getWorld() !== null && $position->getWorld()->getId() !== $this->getWorld()->getId()){
             return false;
         }
 
@@ -141,10 +141,10 @@ class Mine extends Task implements \JsonSerializable {
     }
 
     /**
-     * @return Level | null
+     * @return World | null
      */
-    public function getLevel(){
-        return $this->api->getApi()->getServer()->getLevelByName($this->level);
+    public function getWorld(): ?World {
+        return $this->api->getApi()->getServer()->getWorldManager()->getWorldByName($this->level);
     }
 
     /**
@@ -186,15 +186,18 @@ class Mine extends Task implements \JsonSerializable {
     /**
      * @return bool
      */
-    public function isResetting(){
+    public function isResetting(): bool
+    {
         return $this->isResetting;
     }
 
-    public function hasWarp(){
+    public function hasWarp(): bool
+    {
         return $this->warpName !== "";
     }
 
-    public function getWarpName(){
+    public function getWarpName(): string
+    {
         return $this->warpName;
     }
 
@@ -204,11 +207,11 @@ class Mine extends Task implements \JsonSerializable {
      * @throws InvalidStateException
      * @throws WorldNotFoundException
      */
-    public function reset($force = false){
+    public function reset(bool $force = false){
         if($this->isResetting() && !$force){
             throw new InvalidStateException();
         }
-        if($this->getLevel() === null){
+        if($this->getWorld() === null){
             throw new WorldNotFoundException();
         }
         if(!$this->isValid()){
@@ -220,14 +223,14 @@ class Mine extends Task implements \JsonSerializable {
         $chunkClass = Chunk::class;
         for ($x = $this->getPointA()->getX(); $x-16 <= $this->getPointB()->getX(); $x += 16){
             for ($z = $this->getPointA()->getZ(); $z-16 <= $this->getPointB()->getZ(); $z += 16) {
-                $chunk = $this->getLevel()->getChunk($x >> 4, $z >> 4, true);
+                $chunk = $this->getWorld()->getChunk($x >> 4, $z >> 4);
 
                 $chunkClass = get_class($chunk);
-                $chunks[Level::chunkHash($x >> 4, $z >> 4)] = $chunk->fastSerialize();
+                $chunks[World::chunkHash($x >> 4, $z >> 4)] = FastChunkSerializer::serialize($chunk);
             }
         }
 
-        $resetTask = new ResetTask($this->getName(), $chunks, $this->getPointA(), $this->getPointB(), $this->data, $this->getLevel()->getId(), $chunkClass);
+        $resetTask = new ResetTask($this->getName(), $chunks, $this->getPointA(), $this->getPointB(), $this->data, $this->getWorld()->getId(), $chunkClass);
         $this->getApi()->getApi()->getServer()->getAsyncPool()->submitTask($resetTask);
     }
 
@@ -255,7 +258,7 @@ class Mine extends Task implements \JsonSerializable {
         return $this->name;
     }
 
-    public function jsonSerialize(){
+    public function jsonSerialize(): array {
         return [
             'name' => $this->name,
             'pointA' => [$this->pointA->getX(), $this->pointA->getY(), $this->pointA->getZ()],
@@ -276,7 +279,7 @@ class Mine extends Task implements \JsonSerializable {
      */
     public static function fromJson(MineManager $manager, $json, $name): Mine{
         if(isset($json['pointA']) && isset($json['pointB']) && isset($json['level']) && isset($json['data'])){
-            $a = new Mine($manager,
+            return new Mine($manager,
                 new Vector3(...$json['pointA']),
                 new Vector3(...$json['pointB']),
                 $json['level'],
@@ -284,7 +287,6 @@ class Mine extends Task implements \JsonSerializable {
                 $json['data'],
                 $json['resetInterval'] ?? -1,
                 $json['warpName'] ?? "");
-            return $a;
         }
         throw new JsonFieldMissingException();
     }

@@ -5,9 +5,9 @@ namespace falkirks\minereset\listener;
 
 use falkirks\minereset\Mine;
 use falkirks\minereset\MineManager;
-use pocketmine\level\Level;
 use pocketmine\math\Vector3;
-use pocketmine\Player;
+use pocketmine\player\Player;
+use pocketmine\world\World;
 
 class MineCreationSession{
     /** @var  string */
@@ -18,7 +18,7 @@ class MineCreationSession{
     private $pointA;
     /** @var Vector3 */
     private $pointB;
-    /** @var  Level */
+    /** @var  World */
     private $level;
 
     /**
@@ -84,16 +84,16 @@ class MineCreationSession{
     }
 
     /**
-     * @return Level | null
+     * @return World | null
      */
     public function getLevel(){
         return $this->level;
     }
 
     /**
-     * @param Level $level
+     * @param World $level
      */
-    public function setLevel(Level $level){
+    public function setLevel(World $level){
         $this->level = $level;
     }
 
@@ -115,7 +115,7 @@ class MineCreationSession{
             $mine = new Mine($owner,
                 new Vector3(min($this->pointA->getFloorX(), $this->pointB->getFloorX()), min($this->pointA->getFloorY(), $this->pointB->getFloorY()), min($this->pointA->getFloorZ(), $this->pointB->getFloorZ())),
                 new Vector3(max($this->pointA->getFloorX(), $this->pointB->getFloorX()), max($this->pointA->getFloorY(), $this->pointB->getFloorY()), max($this->pointA->getFloorZ(), $this->pointB->getFloorZ())),
-                $this->level->getName(),
+                $this->level->getFolderName(),
                 $this->name);
             $owner[$this->name] = $mine;
             return $mine;

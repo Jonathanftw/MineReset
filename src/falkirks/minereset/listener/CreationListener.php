@@ -1,20 +1,20 @@
 <?php
-namespace falkirks\minereset\listener;
 
+namespace falkirks\minereset\listener;
 
 use falkirks\minereset\MineReset;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerInteractEvent;
-use pocketmine\Player;
+use pocketmine\player\Player;
 use pocketmine\utils\TextFormat;
 
 class CreationListener implements Listener {
+
     /** @var  MineReset */
     private $api;
 
     /** @var  MineCreationSession[] */
     private $sessions;
-
 
     /**
      * CreationListener constructor.
@@ -32,16 +32,22 @@ class CreationListener implements Listener {
      * @param PlayerInteractEvent $event
      */
     public function onBlockTap(PlayerInteractEvent $event){
+        $player = $event->getPlayer();
+
+        if(!$player instanceof  Player){
+            return;
+        }
+
         if($event->getAction() !== PlayerInteractEvent::RIGHT_CLICK_BLOCK){
             return;
         }
 
-        $session = $this->getPlayerSession($event->getPlayer());
+        $session = $this->getPlayerSession($player);
 
         if($session !== null){
-            if($session->getLevel() === null || $session->getLevel()->getId() === $event->getPlayer()->getLevel()->getId()) {
-                $session->setNextPoint($event->getBlock());
-                $session->setLevel($event->getPlayer()->getPosition()->getLevel());
+            if($session->getLevel() === null || $session->getPlayer()->getWorld()->getId() === $player->getWorld()->getId()) {
+                $session->setNextPoint($event->getBlock()->getPos());
+                $session->setLevel($player->getPosition()->getWorld());
 
                 if($session->canGenerate()){
                     $mine = $session->generate($this->getApi()->getMineManager());
@@ -76,6 +82,10 @@ class CreationListener implements Listener {
         return false;
     }
 
+    /**
+     * @param Player $player
+     * @return MineCreationSession|mixed|null
+     */
     public function getPlayerSession(Player $player){
         foreach ($this->sessions as $session){
             if($session->getPlayer()->getName() === $player->getName()){
@@ -93,6 +103,5 @@ class CreationListener implements Listener {
         }
         return false;
     }
-
 
 }

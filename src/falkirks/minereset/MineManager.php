@@ -1,28 +1,30 @@
 <?php
+
 namespace falkirks\minereset;
 
-
+use Exception;
 use falkirks\minereset\exception\JsonFieldMissingException;
 use falkirks\minereset\store\ConfigStore;
 use falkirks\minereset\store\DataStore;
 use falkirks\minereset\store\Reloadable;
 use falkirks\minereset\store\Saveable;
 use pocketmine\math\Vector3;
-use pocketmine\utils\Color;
 use pocketmine\utils\Config;
 use pocketmine\utils\TextFormat;
 
 class MineManager implements \ArrayAccess, \IteratorAggregate, \Countable {
+
     const MEMORY_TILL_CLOSE = 0;
     const FLUSH_ON_CHANGE = 1;
 
     /** @var MineReset  */
-    private $api;
+    private MineReset $api;
     /** @var DataStore  */
-    private $store;
+    private DataStore $store;
     /** @var  Mine[] */
-    private $mines;
-    private $flag;
+    private array $mines;
+    /** @var mixed|int  */
+    private mixed $flag;
 
     public function __construct(MineReset $api, DataStore $store, $flag = MineManager::FLUSH_ON_CHANGE){
         $this->api = $api;
@@ -41,6 +43,9 @@ class MineManager implements \ArrayAccess, \IteratorAggregate, \Countable {
         }
     }
 
+    /**
+     * @throws Exception
+     */
     private function triggerConfigUpdate(){
         $store = new ConfigStore(new Config($this->getApi()->getDataFolder() . "_minesOLD.yml", Config::YAML));
         foreach($store->getIterator() as $name => $data){
@@ -59,11 +64,13 @@ class MineManager implements \ArrayAccess, \IteratorAggregate, \Countable {
             $this->store->reload();
         }
     }
+
     protected function saveStore($force = false){
         if(($this->flag > 0 || $force) && $this->store instanceof Saveable){
             $this->store->save();
         }
     }
+
     protected function loadMines(): array{
         $out = [];
         foreach($this->store->getIterator() as $name => $data){
@@ -91,6 +98,7 @@ class MineManager implements \ArrayAccess, \IteratorAggregate, \Countable {
             $this->saveStore(true);
         }
     }
+
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Whether a offset exists
@@ -118,6 +126,7 @@ class MineManager implements \ArrayAccess, \IteratorAggregate, \Countable {
     public function offsetGet($offset){
         return $this->mines[$offset] ?? null;
     }
+
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Offset to set
@@ -174,12 +183,12 @@ class MineManager implements \ArrayAccess, \IteratorAggregate, \Countable {
      * @param $name
      * @param array $array
      * @return Mine
-     * @throws \Exception
+     * @throws Exception
      * @DEPRECATED
      */
     protected function mineFromData($name, array $array){
         if(count($array) === 9 || count($array) === 8) {
-            if(!$this->getApi()->getServer()->isLevelLoaded($array[7])){
+            if(!$this->getApi()->getServer()->getWorldManager()->isWorldLoaded($array[7])){
                 $this->api->getLogger()->warning("A mine with the name " . TextFormat::AQUA . $name . TextFormat::RESET . " is connected to a level which is not loaded. You won't be able to use it until you load the level correctly.");
             }
             return new Mine($this,

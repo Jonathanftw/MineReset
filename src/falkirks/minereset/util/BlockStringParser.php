@@ -8,16 +8,15 @@
 
 namespace falkirks\minereset\util;
 
-
 use falkirks\minereset\exception\InvalidBlockStringException;
-use pocketmine\block\BlockIds;
+use pocketmine\block\BlockLegacyIds;
 
 class BlockStringParser{
     private static $blockMap;
 
     private static function ensureMap(){
         if(!is_array(self::$blockMap)) {
-            self::$blockMap = (new \ReflectionClass(BlockIds::class))->getConstants();
+            self::$blockMap = (new \ReflectionClass(BlockLegacyIds::class))->getConstants();
         }
     }
 

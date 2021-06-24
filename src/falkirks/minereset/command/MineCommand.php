@@ -6,21 +6,22 @@ namespace falkirks\minereset\command;
 use falkirks\minereset\MineReset;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
-use pocketmine\command\PluginIdentifiableCommand;
-use pocketmine\Player;
 use pocketmine\plugin\Plugin;
 
-class MineCommand extends Command implements PluginIdentifiableCommand {
+class MineCommand extends Command {
+
     /** @var MineReset  */
     protected $api;
     /** @var  SubCommand[] */
     protected $subCommands;
+
     public function __construct(MineReset $api){
         parent::__construct("mine", "Mine reset command", "/mine <create|set|list|reset|reset-all|destroy|report> <name> [parameters]");
         $this->setPermission("mine.command");
         $this->api = $api;
         $this->subCommands = [];
     }
+
     /**
      * @param CommandSender $sender
      * @param string $commandLabel
@@ -28,7 +29,8 @@ class MineCommand extends Command implements PluginIdentifiableCommand {
      *
      * @return mixed
      */
-    public function execute(CommandSender $sender, string $commandLabel, array $args){
+    public function execute(CommandSender $sender, string $commandLabel, array $args): mixed
+    {
         if(!$this->testPermission($sender)){
 			return null;
 		}
@@ -42,7 +44,7 @@ class MineCommand extends Command implements PluginIdentifiableCommand {
     }
 
     /**
-     * @return \pocketmine\plugin\Plugin
+     * @return Plugin
      */
     public function getPlugin(): Plugin{
         return $this->api;

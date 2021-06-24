@@ -1,6 +1,6 @@
 <?php
-namespace falkirks\minereset\command;
 
+namespace falkirks\minereset\command;
 
 use falkirks\minereset\exception\MineResetException;
 use falkirks\minereset\Mine;
@@ -8,6 +8,7 @@ use pocketmine\command\CommandSender;
 use pocketmine\utils\TextFormat;
 
 class ResetAllCommand extends SubCommand{
+
     public function execute(CommandSender $sender, $commandLabel, array $args){
         if($sender->hasPermission("minereset.command.resetall")) {
             $success = 0;

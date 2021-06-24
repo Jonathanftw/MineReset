@@ -3,13 +3,13 @@ namespace falkirks\minereset\task;
 
 use falkirks\minereset\MineReset;
 use falkirks\minereset\util\BlockStringParser;
-use pocketmine\block\Block;
-use pocketmine\level\format\Chunk;
-use pocketmine\level\Level;
+use pocketmine\block\BlockFactory;
 use pocketmine\math\Vector3;
 use pocketmine\scheduler\AsyncTask;
 use pocketmine\Server;
-
+use pocketmine\world\format\Chunk;
+use pocketmine\world\format\io\FastChunkSerializer;
+use pocketmine\world\World;
 
 class ResetTask extends AsyncTask{
     /** @var  string */
@@ -39,6 +39,7 @@ class ResetTask extends AsyncTask{
         $this->chunkClass = $chunkClass;
         $this->parserClass = BlockStringParser::class;
     }
+
     /**
      * Actions to execute when run
      *
@@ -49,7 +50,7 @@ class ResetTask extends AsyncTask{
         /** @var Chunk[] $chunks */
         $chunks = unserialize($this->chunks);
         foreach($chunks as $hash => $binary){
-            $chunks[$hash] = $chunkClass::fastDeserialize($binary);
+            $chunks[$hash] = FastChunkSerializer::deserialize($binary);
         }
         $sum = [];
         $id = array_map([$this->parserClass, "parse"], array_keys(unserialize($this->ratioData)));
@@ -87,7 +88,7 @@ class ResetTask extends AsyncTask{
                     $currentChunkZ = $chunkZ;
                     $currentSubChunk = null;
 
-                    $hash = Level::chunkHash($chunkX, $chunkZ);
+                    $hash = World::chunkHash($chunkX, $chunkZ);
                     $currentChunk = $chunks[$hash];
                     if($currentChunk === null){
                         continue;
@@ -100,7 +101,7 @@ class ResetTask extends AsyncTask{
                     if($currentSubChunk === null or $chunkY !== $currentChunkY){
                         $currentChunkY = $chunkY;
 
-                        $currentSubChunk = $currentChunk->getSubChunk($chunkY, true);
+                        $currentSubChunk = $currentChunk->getSubChunk($chunkY);
                         if($currentSubChunk === null){
                             continue;
                         }
@@ -109,7 +110,7 @@ class ResetTask extends AsyncTask{
                     $a = rand(0, end($sum));
                     for ($l = 0; $l < $sumCount; $l++) {
                         if ($a <= $sum[$l]) {
-                            $currentSubChunk->setBlock($x & 0x0f, $y & 0x0f, $z & 0x0f, $id[$l][0] & 0xff, $id[$l][1] & 0xff);
+                            $currentSubChunk->setFullBlock($x & 0x0f, $y & 0x0f, $z & 0x0f, BlockFactory::getInstance()->get($id[$l][0] & 0xff, $id[$l][1] & 0xff)->getFullId());
                             $currentBlocks++;
                             if($lastUpdate + $interval <= $currentBlocks){
                                 if(method_exists($this, 'publishProgress')) {
@@ -126,8 +127,9 @@ class ResetTask extends AsyncTask{
         }
         $this->setResult($chunks);
     }
+
     /**
-     * @param Server $server
+     * @param Server|null $server
      */
     public function onCompletion(Server $server = null) : void {
         if($server === null){
@@ -136,10 +138,10 @@ class ResetTask extends AsyncTask{
         $chunks = $this->getResult();
         $plugin = $server->getPluginManager()->getPlugin("MineReset");
         if($plugin instanceof MineReset and $plugin->isEnabled()) {
-            $level = $server->getLevel($this->levelId);
-            if ($level instanceof Level) {
+            $level = $server->getWorldManager()->getWorld($this->levelId);
+            if ($level instanceof World) {
                 foreach ($chunks as $hash => $chunk) {
-                    Level::getXZ($hash, $x, $z);
+                    World::getXZ($hash, $x, $z);
                     $level->setChunk($x, $z, $chunk, !MineReset::supportsChunkSetting());
 
                 }

@@ -1,12 +1,13 @@
 <?php
-namespace falkirks\minereset\command;
 
+namespace falkirks\minereset\command;
 
 use falkirks\minereset\MineReset;
 use pocketmine\command\CommandSender;
 use pocketmine\plugin\Plugin;
 
 abstract class SubCommand{
+
     /** @var  MineReset */
     private $api;
 
@@ -17,7 +18,6 @@ abstract class SubCommand{
     public function __construct(MineReset $api){
         $this->api = $api;
     }
-
 
     abstract public function execute(CommandSender $sender, $commandLabel, array $args);
 

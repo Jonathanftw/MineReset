@@ -1,15 +1,16 @@
 <?php
-namespace falkirks\minereset;
 
+namespace falkirks\minereset;
 
 use pocketmine\command\CommandSender;
 
-class ResetProgressManager{
+class ResetProgressManager {
+
     /** @var  MineReset */
-    private $api;
+    private MineReset $api;
 
     /** @var  array */
-    private $subscriptions;
+    private array $subscriptions;
 
     /**
      * ResetProgressManager constructor.
@@ -19,7 +20,6 @@ class ResetProgressManager{
         $this->api = $api;
         $this->subscriptions = [];
     }
-
 
     public function notifyProgress(string $progress, string $mineName){
         if(isset($this->subscriptions[$mineName])){
@@ -54,6 +54,4 @@ class ResetProgressManager{
     public function getApi(): MineReset{
         return $this->api;
     }
-
-
 }
