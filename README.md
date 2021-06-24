@@ -1,6 +1,6 @@
 MineReset
 =========
-MineReset is a fancy tool which allows you to create resettable mines the right way. It has been entirely rewritten in version 3.0.
+MineReset is a fancy tool which allows you to create resettable mines the right way. It has been entirely rewritten in version 4.0.
 
 
 ## Commands

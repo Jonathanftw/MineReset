@@ -23,7 +23,6 @@ class AboutPullTask extends AsyncTask {
         $this->storeLocal($sender);
     }
 
-
     public function onRun() : void {
         if(method_exists(Utils::class, "getURL")){
             $this->setResult(Utils::get(AboutPullTask::ABOUT_URL));

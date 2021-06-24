@@ -9,17 +9,18 @@ use pocketmine\math\Vector3;
 use pocketmine\player\Player;
 use pocketmine\world\World;
 
-class MineCreationSession{
+class MineCreationSession {
+
     /** @var  string */
-    private $name;
+    private string $name;
     /** @var  Player */
-    private $player;
-    /** @var Vector3 */
-    private $pointA;
-    /** @var Vector3 */
-    private $pointB;
-    /** @var  World */
-    private $level;
+    private Player $player;
+    /** @var Vector3|null */
+    private ?Vector3 $pointA;
+    /** @var Vector3|null */
+    private ?Vector3 $pointB;
+    /** @var World|null */
+    private ?World $level;
 
     /**
      * MineCreationSession constructor.
@@ -58,7 +59,7 @@ class MineCreationSession{
     /**
      * @return Vector3 | null
      */
-    public function getPointA(){
+    public function getPointA(): ?Vector3{
         return $this->pointA;
     }
 
@@ -72,7 +73,7 @@ class MineCreationSession{
     /**
      * @return Vector3 | null
      */
-    public function getPointB(){
+    public function getPointB(): ?Vector3{
         return $this->pointB;
     }
 
@@ -86,7 +87,7 @@ class MineCreationSession{
     /**
      * @return World | null
      */
-    public function getLevel(){
+    public function getLevel(): ?World{
         return $this->level;
     }
 
@@ -124,5 +125,4 @@ class MineCreationSession{
             throw new \InvalidStateException();
         }
     }
-
 }

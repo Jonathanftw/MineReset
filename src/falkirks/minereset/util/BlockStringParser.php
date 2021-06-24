@@ -12,6 +12,7 @@ use falkirks\minereset\exception\InvalidBlockStringException;
 use pocketmine\block\BlockLegacyIds;
 
 class BlockStringParser{
+
     private static $blockMap;
 
     private static function ensureMap(){
@@ -19,7 +20,6 @@ class BlockStringParser{
             self::$blockMap = (new \ReflectionClass(BlockLegacyIds::class))->getConstants();
         }
     }
-
 
     public static function isValid(string $str): bool {
         self::ensureMap();
@@ -33,7 +33,6 @@ class BlockStringParser{
         }
 
         return false;
-
     }
 
     /**
@@ -64,5 +63,4 @@ class BlockStringParser{
 
         throw new InvalidBlockStringException();
     }
-
 }

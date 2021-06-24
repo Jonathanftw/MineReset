@@ -32,21 +32,21 @@ use pocketmine\world\World;
 class MineReset extends PluginBase{
 
     /** @var  MineManager */
-    private $mineManager;
+    private MineManager $mineManager;
     /** @var  ResetProgressManager */
-    private $resetProgressManager;
+    private ResetProgressManager $resetProgressManager;
     /** @var  RegionBlockerListener */
-    private $regionBlockerListener;
+    private RegionBlockerListener $regionBlockerListener;
     /** @var  MineCommand */
-    private $mainCommand;
+    private MineCommand $mainCommand;
     /** @var DebugDumpFactory */
-    private $debugDumpFactory;
+    private DebugDumpFactory $debugDumpFactory;
 
     /** @var  bool */
-    private static $supportsChunkSetting = null;
+    private static ?bool $supportsChunkSetting = null;
 
     /** @var  CreationListener */
-    private $creationListener;
+    private CreationListener $creationListener;
 
     public function onEnable(): void {
         self::detectChunkSetting();

@@ -9,7 +9,7 @@ use pocketmine\plugin\Plugin;
 abstract class SubCommand{
 
     /** @var  MineReset */
-    private $api;
+    private MineReset $api;
 
     /**
      * SubCommand constructor.

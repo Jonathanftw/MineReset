@@ -9,7 +9,6 @@ class DebugDumpFactory{
     /** @var  MineReset */
     private MineReset $api;
 
-
     /**
      * DebugDump constructor.
      */
@@ -30,8 +29,7 @@ class DebugDumpFactory{
         ]);
     }
 
-
-    function __toString(){
+    public function __toString(){
         return $this->generate();
     }
 

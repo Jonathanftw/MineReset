@@ -15,7 +15,7 @@ use pocketmine\world\Position;
 class RegionBlockerListener implements Listener {
 
     /** @var  MineReset */
-    private $api;
+    private MineReset $api;
 
     /**
      * RegionBlockerListener constructor.
@@ -92,5 +92,4 @@ class RegionBlockerListener implements Listener {
     public function getApi(): MineReset{
         return $this->api;
     }
-
 }

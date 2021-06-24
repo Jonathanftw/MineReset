@@ -11,23 +11,24 @@ use pocketmine\world\format\Chunk;
 use pocketmine\world\format\io\FastChunkSerializer;
 use pocketmine\world\World;
 
-class ResetTask extends AsyncTask{
-    /** @var  string */
-    private $name;
-    /** @var string $chunks */
-    private $chunks;
-    /** @var Vector3 $a */
-    private $a;
-    /** @var Vector3 $b */
-    private $b;
-    /** @var string $ratioData */
-    private $ratioData;
-    /** @var int $levelId */
-    private $levelId;
-    /** @var Chunk $chunkClass */
-    private $chunkClass;
+class ResetTask extends AsyncTask {
 
-    private $parserClass;
+    /** @var  string */
+    private string $name;
+    /** @var string $chunks */
+    private string $chunks;
+    /** @var Vector3 $a */
+    private Vector3 $a;
+    /** @var Vector3 $b */
+    private Vector3 $b;
+    /** @var string $ratioData */
+    private string $ratioData;
+    /** @var int $levelId */
+    private int $levelId;
+    /** @var Chunk $chunkClass */
+    private Chunk $chunkClass;
+    /** @var string  */
+    private string $parserClass;
 
     public function __construct(string $name, array $chunks, Vector3 $a, Vector3 $b, array $data, $levelId, $chunkClass){
         $this->name = $name;
@@ -153,9 +154,9 @@ class ResetTask extends AsyncTask{
 
     /**
      * @param mixed $server
-     * @param mixed $progress
+     * @param mixed|null $progress
      */
-    public function onProgressUpdate($server, $progress = null): void {
+    public function onProgressUpdate($server, mixed $progress = null): void {
         if($progress === null){
             $progress = $server;
             $server = Server::getInstance();

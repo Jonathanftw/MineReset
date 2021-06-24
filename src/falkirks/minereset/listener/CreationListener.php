@@ -11,10 +11,10 @@ use pocketmine\utils\TextFormat;
 class CreationListener implements Listener {
 
     /** @var  MineReset */
-    private $api;
+    private MineReset $api;
 
     /** @var  MineCreationSession[] */
-    private $sessions;
+    private array $sessions;
 
     /**
      * CreationListener constructor.

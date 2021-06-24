@@ -7,6 +7,7 @@ use pocketmine\command\CommandSender;
 use pocketmine\utils\TextFormat;
 
 class ListCommand extends SubCommand{
+
     public function execute(CommandSender $sender, $commandLabel, array $args){
         if($sender->hasPermission("minereset.command.list")) {
             $sender->sendMessage("---- Mines ----");

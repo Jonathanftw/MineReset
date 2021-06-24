@@ -47,14 +47,15 @@ class Mine extends Task implements \JsonSerializable {
      * @param int $resetInterval
      * @param string $warpName
      */
-    public function __construct(MineManager $api,
-                                Vector3 $pointA,
-                                Vector3 $pointB,
-                                string $levelName,
-                                string $name,
-                                array $data = [],
-                                int $resetInterval = -1,
-                                string $warpName = ""){
+    public function __construct(
+        MineManager $api,
+        Vector3 $pointA,
+        Vector3 $pointB,
+        string $levelName,
+        string $name,
+        array $data = [],
+        int $resetInterval = -1,
+        string $warpName = ""){
         $this->pointA = $pointA;
         $this->pointB = $pointB;
         $this->level = $levelName;
@@ -85,7 +86,6 @@ class Mine extends Task implements \JsonSerializable {
         return true;
     }
 
-
     /**
      * INTERNAL USE ONLY
      */
@@ -100,7 +100,7 @@ class Mine extends Task implements \JsonSerializable {
      */
     public function destroy(){
         if($this->getHandler() !== null) {
-           // $this->getApi()->getApi()->getScheduler()->cancelTask($this->getTaskId());
+            //$this->getApi()->getApi()->getScheduler()->cancelTask($this->getTaskId());
         }
     }
 
